@@ -11,6 +11,7 @@ import {
   ArrowRight 
 } from 'lucide-react';
 import { EVERYDAY_MOMENTS_DATA } from '../data/everydayNeedsData';
+import type { EverydayEssentialItem } from '../data/everydayNeedsData';
 import { useShoppingList } from '../context/ShoppingListContext';
 
 export const EverydayMoments: React.FC = () => {
@@ -19,8 +20,8 @@ export const EverydayMoments: React.FC = () => {
 
   const activeMoment = EVERYDAY_MOMENTS_DATA.find((m) => m.id === activeMomentId) || EVERYDAY_MOMENTS_DATA[0];
 
-  const handleAddEssential = (item: { name: string; brand: string; qtyHint: string }) => {
-    addItem(item.name, activeMoment.title, item.brand, item.qtyHint);
+  const handleAddEssential = (item: EverydayEssentialItem) => {
+    addItem(item.name, activeMoment.title, item.brand, item.qtyHint, item.mrp, item.hindiName);
   };
 
   const getMomentIcon = (id: string) => {
@@ -45,9 +46,12 @@ export const EverydayMoments: React.FC = () => {
             <Clock className="w-4 h-4 text-emerald-700" />
             <span>Complete Daily Living Covered</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-stone-900 tracking-tight mb-3">
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-stone-900 tracking-tight mb-2">
             From Morning Chai to Evening Snacks
           </h2>
+          <div className="text-sm font-bold text-amber-900 mb-2">
+            दैनिक दिनचर्या की संपूर्ण किराना सामग्री (एमआरपी व हिंदी नाम सहित)
+          </div>
           <p className="text-base text-stone-600">
             No matter the hour or the household need, <strong className="text-stone-900">Dilip Kirana Store</strong> is stocked with fresh, top-quality daily essentials for your family.
           </p>
@@ -100,7 +104,7 @@ export const EverydayMoments: React.FC = () => {
                 {activeMoment.timeSlot} • {activeMoment.timeSlotHindi}
               </div>
 
-              <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-stone-900 mb-2">
+              <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-stone-900 mb-1">
                 {activeMoment.title}
               </h3>
 
@@ -112,15 +116,15 @@ export const EverydayMoments: React.FC = () => {
                 {activeMoment.description}
               </p>
 
-              <div className="p-4 bg-white rounded-2xl border border-stone-200 text-xs text-stone-600 font-medium">
-                ✨ <strong>Kirana Tip:</strong> You can add all recommended items for this routine directly into your WhatsApp Grocery Parchi!
+              <div className="p-4 bg-white rounded-2xl border border-stone-200 text-xs text-stone-700 font-medium">
+                ✨ <strong>Kirana Tip:</strong> Click "+ Add to Parchi" to append all essential items directly to your WhatsApp grocery list!
               </div>
             </div>
 
             {/* Right Recommended Essentials Grid */}
             <div className="lg:col-span-7">
               <div className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3 flex items-center justify-between">
-                <span>Recommended Daily Staples for This Time</span>
+                <span>Recommended Staples with MRP</span>
                 <span className="text-emerald-700 font-semibold">Ready in Sanjay Nagar</span>
               </div>
 
@@ -130,28 +134,34 @@ export const EverydayMoments: React.FC = () => {
                     key={idx}
                     className="p-3.5 bg-white rounded-xl border border-stone-200 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all flex items-center justify-between gap-3 shadow-2xs group"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <div className="w-8 h-8 rounded-lg bg-stone-100 text-stone-600 font-bold text-xs flex items-center justify-center shrink-0">
                         {idx + 1}
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="text-sm font-bold text-stone-900 truncate">
                           {item.name}
                         </div>
-                        <div className="text-xs text-stone-500 flex items-center gap-2">
-                          <span className="font-semibold text-emerald-700">{item.brand}</span>
+                        <div className="text-xs font-semibold text-emerald-800 truncate">
+                          {item.hindiName}
+                        </div>
+                        <div className="text-[11px] text-stone-500 flex items-center gap-2 mt-0.5">
+                          <span className="font-semibold text-stone-700">{item.brand}</span>
                           <span>•</span>
                           <span>{item.qtyHint}</span>
+                          <span className="font-bold text-amber-900 bg-amber-100 px-1.5 py-0.2 rounded">
+                            MRP ₹{item.mrp}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     <button
                       onClick={() => handleAddEssential(item)}
-                      className="px-3 py-1.5 bg-stone-100 hover:bg-emerald-600 text-stone-700 hover:text-white border border-stone-300 hover:border-emerald-600 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shrink-0"
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shrink-0 shadow-2xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Add to List</span>
+                      <span>+ Add</span>
                     </button>
                   </div>
                 ))}

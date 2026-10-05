@@ -19,11 +19,11 @@ export const Hero: React.FC = () => {
   const { addItem } = useShoppingList();
 
   const heroQuickItems = [
-    { name: "Lay's Magic Masala Chips (₹20)", category: "Snacks", brand: "Lay's", tag: "Hot Pick" },
-    { name: "Kurkure Masala Munch (₹20)", category: "Snacks", brand: "Kurkure", tag: "Popular" },
-    { name: "Nestle Maggi 2-Min (4-Pack)", category: "Instant Food", brand: "Maggi", tag: "Bestseller" },
-    { name: "Amul Gold Fresh Milk (1L)", category: "Dairy", brand: "Amul", tag: "Fresh Daily" },
-    { name: "Aashirvaad Atta (5kg)", category: "Staples", brand: "Aashirvaad", tag: "Daily Essential" },
+    { name: "Lay's Magic Masala Potato Chips", hindiName: "लेज़ मैजिक मसाला चिप्स", category: "Snacks", brand: "Lay's", unit: "₹20 Pack", mrp: 20, tag: "Hot Pick" },
+    { name: "Kurkure Masala Munch Corn Curls", hindiName: "कुरकुरे मसाला मंच", category: "Snacks", brand: "Kurkure", unit: "₹20 Pack", mrp: 20, tag: "Popular" },
+    { name: "Nestle Maggi 2-Min (4-Pack)", hindiName: "नेस्ले मैगी (4-पैक)", category: "Instant Food", brand: "Maggi", unit: "4-Pack", mrp: 56, tag: "Bestseller" },
+    { name: "Amul Gold Fresh Milk (1L)", hindiName: "अमूल गोल्ड दूध (1L)", category: "Dairy", brand: "Amul", unit: "1 Litre", mrp: 66, tag: "Fresh Daily" },
+    { name: "Aashirvaad Chakki Atta (5kg)", hindiName: "आशीर्वाद चक्की आटा (5kg)", category: "Staples", brand: "Aashirvaad", unit: "5 kg Bag", mrp: 215, tag: "Daily Essential" },
   ];
 
   return (
@@ -174,17 +174,22 @@ export const Hero: React.FC = () => {
                           <div className="text-xs font-bold text-stone-900 group-hover:text-emerald-950 truncate">
                             {item.name}
                           </div>
-                          <div className="flex items-center gap-2 text-[10px] text-stone-500">
-                            <span>{item.brand}</span>
+                          <div className="text-[11px] text-emerald-800 font-semibold truncate">
+                            {item.hindiName}
+                          </div>
+                          <div className="flex items-center gap-2 text-[10px] text-stone-500 mt-0.5">
+                            <span className="font-bold text-amber-900 bg-amber-100 px-1 rounded">
+                              MRP ₹{item.mrp}
+                            </span>
                             <span>•</span>
-                            <span className="text-emerald-700 font-semibold">{item.tag}</span>
+                            <span>{item.brand}</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Quick Add Button */}
                       <button
-                        onClick={() => addItem(item.name, item.category, item.brand)}
+                        onClick={() => addItem(item.name, item.category, item.brand, item.unit, item.mrp, item.hindiName)}
                         className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-600 text-stone-700 hover:text-white border border-stone-300 hover:border-emerald-600 transition-colors shadow-2xs shrink-0"
                         title="Add to grocery list"
                       >

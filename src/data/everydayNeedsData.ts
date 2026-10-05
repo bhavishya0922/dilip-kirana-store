@@ -1,3 +1,11 @@
+export interface EverydayEssentialItem {
+  name: string;
+  hindiName: string;
+  brand: string;
+  qtyHint: string;
+  mrp: number;
+}
+
 export interface EverydayMoment {
   id: string;
   timeSlot: string;
@@ -9,11 +17,7 @@ export interface EverydayMoment {
   accentColor: string;
   badge: string;
   description: string;
-  essentialsList: {
-    name: string;
-    brand: string;
-    qtyHint: string;
-  }[];
+  essentialsList: EverydayEssentialItem[];
 }
 
 export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
@@ -27,13 +31,13 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     bgGradient: "from-amber-500/10 via-orange-500/5 to-transparent",
     accentColor: "border-amber-400 text-amber-900 bg-amber-50",
     badge: "🌅 Fresh Daily Morning Stock",
-    description: "Whether it's fresh packet milk for your morning cup, crispy toast-rusk, or quick poha & suji for tiffin — we have it ready first thing in the morning.",
+    description: "Whether it's fresh packet milk for your morning cup, crispy toast-rusk, or quick poha & suji for tiffin — we have it ready first thing in the morning at Jhanda Chowk.",
     essentialsList: [
-      { name: "Fresh Packaged Milk & Dahi", brand: "Amul Gold / Taaza / Devbhog", qtyHint: "500ml / 1L" },
-      { name: "Strong Tea Leaves (Chai Patti)", brand: "Tata Tea Gold / Red Label", qtyHint: "250g / 500g" },
-      { name: "Crispy Suji & Elaichi Toast", brand: "Britannia Toastea / Rusk", qtyHint: "200g / 400g" },
-      { name: "Fresh Sandwich Bread & Butter", brand: "Britannia / Amul Butter", qtyHint: "Daily Fresh" },
-      { name: "Breakfast Poha & Semolina (Suji)", brand: "Rajdhani / Tata Sampann", qtyHint: "500g / 1kg" },
+      { name: "Amul Gold Full Cream Milk", hindiName: "अमूल गोल्ड ताजा दूध (1L)", brand: "Amul Gold", qtyHint: "1 Litre", mrp: 66 },
+      { name: "Tata Tea Gold Leaf Tea", hindiName: "टाटा टी गोल्ड पत्ती चाय (500g)", brand: "Tata Tea", qtyHint: "500g", mrp: 320 },
+      { name: "Britannia Toastea Suji Rusk", hindiName: "ब्रिटानिया सूजी टोस्ट/रस्क", brand: "Britannia", qtyHint: "400g", mrp: 65 },
+      { name: "Fresh Sandwich Bread & Amul Butter", hindiName: "ताजा ब्रेड एवं अमूल मक्खन", brand: "Britannia / Amul", qtyHint: "400g + 100g", mrp: 103 },
+      { name: "Rajdhani Poha & Fine Sooji", hindiName: "राजधानी पोहा एवं बारीक सूजी", brand: "Rajdhani", qtyHint: "1kg + 500g", mrp: 90 },
     ]
   },
   {
@@ -48,11 +52,11 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     badge: "🍲 100% Wholesome Staples",
     description: "Everything you need for a delicious thali: chakki atta for fluffy rotis, aromatic basmati rice, protein-rich toor & moong dals, pure mustard/refined oils, and fragrant masalas.",
     essentialsList: [
-      { name: "Whole Wheat Chakki Atta", brand: "Aashirvaad / Fortune Atta", qtyHint: "5kg / 10kg" },
-      { name: "Aromatic Basmati & Daily Rice", brand: "India Gate / Daily Rice", qtyHint: "1kg / 5kg / 25kg" },
-      { name: "Toor, Moong & Chana Pulses", brand: "Tata Sampann / Cleaned Dal", qtyHint: "1kg" },
-      { name: "Kachi Ghani Mustard & Refined Oil", brand: "Fortune / Dhara", qtyHint: "1L / 5L" },
-      { name: "Pure Turmeric, Mirch & Garam Masala", brand: "Everest / MDH / Catch", qtyHint: "100g / 200g" },
+      { name: "Aashirvaad Whole Wheat Atta", hindiName: "आशीर्वाद शुद्ध चक्की आटा", brand: "Aashirvaad", qtyHint: "5 kg Bag", mrp: 215 },
+      { name: "India Gate Basmati / Daily Rice", hindiName: "इंडिया गेट बासमती चावल", brand: "India Gate", qtyHint: "1 kg", mrp: 115 },
+      { name: "Tata Sampann Toor Dal", hindiName: "टाटा सम्पन्न अरहर दाल", brand: "Tata Sampann", qtyHint: "1 kg", mrp: 165 },
+      { name: "Fortune Kachi Ghani Mustard Oil", hindiName: "फॉर्च्यून कच्ची घानी सरसों तेल", brand: "Fortune", qtyHint: "1 Litre", mrp: 145 },
+      { name: "Everest Haldi, Mirch & Garam Masala", hindiName: "एवरेस्ट हल्दी, मिर्च व गरम मसाला", brand: "Everest Spices", qtyHint: "Combo Pack", mrp: 263 },
     ]
   },
   {
@@ -65,13 +69,13 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     bgGradient: "from-orange-500/10 via-amber-500/5 to-transparent",
     accentColor: "border-orange-400 text-orange-900 bg-orange-50",
     badge: "☕ Evening Chai Partner",
-    description: "Welcome guests or treat your family with spicy Bikaneri sev, aloo bhujia, crunchy potato chips, biscuits, and cold soft drinks.",
+    description: "Welcome guests or treat your family with spicy Bikaneri sev, aloo bhujia, crunchy potato chips, biscuits, and chilled soft drinks.",
     essentialsList: [
-      { name: "Aloo Bhujia & Ratlami Sev", brand: "Haldiram's / Bikaji", qtyHint: "200g / 400g" },
-      { name: "GoodDay, Marie Gold & Parle-G", brand: "Britannia / Parle", qtyHint: "Multipacks" },
-      { name: "Crispy Potato Chips & Kurkure", brand: "Lay's / Bingo / Kurkure", qtyHint: "All Flavours" },
-      { name: "Chilled Soft Drinks & Fruit Juices", brand: "Thums Up / Coke / Frooti", qtyHint: "Chilled Bottles" },
-      { name: "Maggi 2-Minute Masala Noodles", brand: "Nestle Maggi / Yippee", qtyHint: "Single / 4-Pack" },
+      { name: "Haldiram's Aloo Bhujia / Ratlami Sev", hindiName: "हल्दीराम आलू भुजिया / रतलामी सेव", brand: "Haldiram's", qtyHint: "400g", mrp: 110 },
+      { name: "Britannia Good Day / Parle-G", hindiName: "गुड डे बटर एवं पारले-जी बिस्कुट", brand: "Britannia / Parle", qtyHint: "Family Packs", mrp: 50 },
+      { name: "Lay's Magic Masala & Kurkure", hindiName: "लेज़ मैजिक मसाला व कुरकुरे", brand: "Lay's / Kurkure", qtyHint: "2 x ₹20 Packs", mrp: 40 },
+      { name: "Thums Up / Sprite Chilled", hindiName: "थम्स अप / स्प्राइट ठंडी बोतल", brand: "Coca-Cola", qtyHint: "600 ml", mrp: 40 },
+      { name: "Nestle Maggi 2-Min (4-Pack)", hindiName: "नेस्ले मैगी 2-मिनट (4-पैक)", brand: "Nestle Maggi", qtyHint: "4-Pack", mrp: 56 },
     ]
   },
   {
@@ -86,11 +90,11 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     badge: "🧼 99.9% Germ Free Home",
     description: "Detergent powders that remove tough stains, lemon dishwash bars for squeaky clean utensils, and disinfectants for gleaming floors.",
     essentialsList: [
-      { name: "Washing Powder & Detergent Bars", brand: "Surf Excel / Ariel / Tide", qtyHint: "1kg / 2kg / 5kg" },
-      { name: "Dishwash Bars, Gel & Scrubbers", brand: "Vim Bar & Gel / Scotch-Brite", qtyHint: "Bar / 500ml" },
-      { name: "Disinfectant Floor & Bathroom Cleaner", brand: "Lizol / Harpic Power Plus", qtyHint: "500ml / 1L" },
-      { name: "Bath Soaps & Toothpastes", brand: "Dettol / Dove / Colgate", qtyHint: "Family Packs" },
-      { name: "Mosquito Liquid Refill & Coils", brand: "Good Knight / All Out", qtyHint: "Single / Combo" },
+      { name: "Surf Excel Quick Wash Detergent", hindiName: "सर्फ एक्सेल वॉशिंग पाउडर", brand: "Surf Excel", qtyHint: "1 kg", mrp: 140 },
+      { name: "Vim Dishwash Bar & Liquid Gel", hindiName: "विम बार एवं लिक्विड जेल", brand: "Vim", qtyHint: "Bar + 500ml", mrp: 130 },
+      { name: "Lizol Disinfectant Floor Cleaner", hindiName: "लाइजोल फिनाइल फर्श क्लीनर", brand: "Lizol", qtyHint: "1 Litre", mrp: 210 },
+      { name: "Dettol Soap 4-Pack & Colgate 100g", hindiName: "डेटॉल साबुन 4-पैक एवं कोलगेट", brand: "Dettol / Colgate", qtyHint: "Combo", mrp: 215 },
+      { name: "Good Knight Gold Flash Refill", hindiName: "गुड नाइट मच्छर लिक्विड रिफिल", brand: "Good Knight", qtyHint: "45 ml", mrp: 85 },
     ]
   },
   {
@@ -105,10 +109,10 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     badge: "🪔 Divine Fragrance & Purity",
     description: "Everyday essentials for your home mandir to keep your puja room sacred, fragrant, and spiritually peaceful.",
     essentialsList: [
-      { name: "Fragrant Agarbatti & Dhoop Cones", brand: "Cycle Pure / Zed Black", qtyHint: "Zipper Box" },
-      { name: "100% Pure Bhimseni Camphor (Karpur)", brand: "Mangalam Camphor", qtyHint: "50g / 100g Jar" },
-      { name: "Cotton Diya Wicks (Phool Batti)", brand: "Premium Handcrafted Batti", qtyHint: "100 pcs Pack" },
-      { name: "Matchbox Bundles & Emergency Candles", brand: "Homelites / Ship", qtyHint: "10-in-1 Bundle" },
+      { name: "Cycle Three-in-One Agarbatti", hindiName: "साइकिल थ्री-इन-वन अगरबत्ती", brand: "Cycle Pure", qtyHint: "Box Pack", mrp: 55 },
+      { name: "Mangalam Pure Bhimseni Camphor", hindiName: "मंगलम शुद्ध भीमसेनी कपूर", brand: "Mangalam Camphor", qtyHint: "100g Jar", mrp: 95 },
+      { name: "Cotton Diya Phool Batti", hindiName: "हस्तनिर्मित रुई फूल बत्ती", brand: "Handcrafted Batti", qtyHint: "100 pcs", mrp: 30 },
+      { name: "Homelites Matchbox Bundle (10pcs)", hindiName: "होमलाइट्स माचिस बंडल", brand: "Homelites", qtyHint: "10 Boxes", mrp: 15 },
     ]
   },
   {
@@ -121,12 +125,12 @@ export const EVERYDAY_MOMENTS_DATA: EverydayMoment[] = [
     bgGradient: "from-purple-500/10 via-pink-500/5 to-transparent",
     accentColor: "border-purple-400 text-purple-900 bg-purple-50",
     badge: "🌙 Open Till 10:00 PM",
-    description: "Ran out of milk or sugar at night? Sudden guest arrival? Need a cold drink or ice cream after dinner? Dilip Kirana Store is right in Sanjay Nagar for instant pickup.",
+    description: "Ran out of milk or sugar at night? Sudden guest arrival? Need a cold drink or chocolates after dinner? Dilip Kirana Store is right in Sanjay Nagar for instant pickup.",
     essentialsList: [
-      { name: "Chilled Ice Creams & Kulfis", brand: "Amul / Kwality Wall's", qtyHint: "Cups / Chocobars" },
-      { name: "Cadbury Dairy Milk & KitKat", brand: "Cadbury / Nestle", qtyHint: "All Sizes" },
-      { name: "Emergency Sugar, Milk & Salt Refill", brand: "Tata / Amul", qtyHint: "Quick Bag" },
-      { name: "Instant Noodles & Soups", brand: "Maggi / Knorr", qtyHint: "Single / 4-Pack" },
+      { name: "Cadbury Dairy Milk Silk / Bar", hindiName: "कैडबरी डेयरी मिल्क सिल्क / बार", brand: "Cadbury", qtyHint: "All Sizes", mrp: 40 },
+      { name: "Amul Gold Milk Emergency Pack", hindiName: "अमूल दूध इमरजेंसी पैकेट", brand: "Amul", qtyHint: "500ml / 1L", mrp: 33 },
+      { name: "Madhur Pure Crystal Sugar", hindiName: "मधुर शुद्ध सफेद शक्कर", brand: "Madhur", qtyHint: "1 kg", mrp: 50 },
+      { name: "Nestle Maggi 2-Minute Masala", hindiName: "मैगी 2-मिनट मसाला", brand: "Maggi", qtyHint: "Single / 4-Pack", mrp: 14 },
     ]
   }
 ];

@@ -5,17 +5,26 @@ import { STORE_CONFIG } from '../config/storeConfig';
 export interface ListItem {
   id: string;
   name: string;
+  hindiName?: string;
   category?: string;
   quantity: number;
   unit?: string;
   brandHint?: string;
+  mrp?: number;
 }
 
 export type OrderFulfillmentMode = 'pickup' | 'delivery';
 
 interface ShoppingListContextType {
   items: ListItem[];
-  addItem: (name: string, category?: string, brandHint?: string, unit?: string) => void;
+  addItem: (
+    name: string,
+    category?: string,
+    brandHint?: string,
+    unit?: string,
+    mrp?: number,
+    hindiName?: string
+  ) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearList: () => void;
@@ -32,9 +41,10 @@ interface ShoppingListContextType {
   sendListViaWhatsApp: () => void;
   copyListToClipboard: () => boolean;
   totalItemCount: number;
+  estimatedTotalAmount: number;
 }
 
-const LOCAL_STORAGE_KEY = 'dilip_kirana_shopping_list_v2';
+const LOCAL_STORAGE_KEY = 'dilip_kirana_shopping_list_v3';
 
 const ShoppingListContext = createContext<ShoppingListContextType | undefined>(undefined);
 
@@ -48,13 +58,58 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (e) {
       console.warn("Could not load stored shopping list", e);
     }
-    // Starter items showing the rich variety
+    // Starter items showing bilingual names and exact MRP
     return [
-      { id: 'item-1', name: "Lay's India's Magic Masala Chips (₹20)", category: 'Chips & Namkeen', quantity: 2, unit: '₹20 Pack', brandHint: "Lay's" },
-      { id: 'item-2', name: 'Kurkure Masala Munch (₹20)', category: 'Chips & Namkeen', quantity: 2, unit: '₹20 Pack', brandHint: 'Kurkure' },
-      { id: 'item-3', name: 'Nestle Maggi 2-Minute Masala (4-Pack)', category: 'Instant Food', quantity: 1, unit: '4-Pack', brandHint: 'Maggi' },
-      { id: 'item-4', name: 'Amul Gold Full Cream Milk (1L)', category: 'Dairy', quantity: 1, unit: '1 Litre', brandHint: 'Amul' },
-      { id: 'item-5', name: 'Aashirvaad Whole Wheat Atta (5kg)', category: 'Groceries & Staples', quantity: 1, unit: '5 kg', brandHint: 'Aashirvaad' },
+      { 
+        id: 'item-1', 
+        name: "Lay's India's Magic Masala Potato Chips", 
+        hindiName: "लेज़ मैजिक मसाला आलू चिप्स",
+        category: 'Chips & Namkeen', 
+        quantity: 2, 
+        unit: '₹20 Pack', 
+        brandHint: "Lay's",
+        mrp: 20
+      },
+      { 
+        id: 'item-2', 
+        name: 'Kurkure Masala Munch Corn Curls', 
+        hindiName: 'कुरकुरे मसाला मंच',
+        category: 'Chips & Namkeen', 
+        quantity: 2, 
+        unit: '₹20 Pack', 
+        brandHint: 'Kurkure',
+        mrp: 20
+      },
+      { 
+        id: 'item-3', 
+        name: 'Nestle Maggi 2-Minute Masala (4-in-1 Multipack)', 
+        hindiName: 'नेस्ले मैगी 2-मिनट मसाला (4-पैक)',
+        category: 'Instant Food', 
+        quantity: 1, 
+        unit: '4-Pack (280g)', 
+        brandHint: 'Maggi',
+        mrp: 56
+      },
+      { 
+        id: 'item-4', 
+        name: 'Amul Gold Full Cream Fresh Milk (1 Litre)', 
+        hindiName: 'अमूल गोल्ड फुल क्रीम ताजा दूध (1 लीटर)',
+        category: 'Dairy', 
+        quantity: 1, 
+        unit: '1 Litre Pouch', 
+        brandHint: 'Amul',
+        mrp: 66
+      },
+      { 
+        id: 'item-5', 
+        name: 'Aashirvaad Superior Whole Wheat Chakki Atta', 
+        hindiName: 'आशीर्वाद शुद्ध चक्की आटा (5 किग्रा)',
+        category: 'Groceries & Staples', 
+        quantity: 1, 
+        unit: '5 kg Bag', 
+        brandHint: 'Aashirvaad',
+        mrp: 215
+      },
     ];
   });
 
@@ -72,7 +127,14 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [items]);
 
-  const addItem = (name: string, category?: string, brandHint?: string, unit?: string) => {
+  const addItem = (
+    name: string,
+    category?: string,
+    brandHint?: string,
+    unit?: string,
+    mrp?: number,
+    hindiName?: string
+  ) => {
     if (!name.trim()) return;
 
     setItems((prev) => {
@@ -86,16 +148,20 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
         updated[existingIndex] = {
           ...updated[existingIndex],
           quantity: updated[existingIndex].quantity + 1,
+          mrp: mrp !== undefined ? mrp : updated[existingIndex].mrp,
+          hindiName: hindiName || updated[existingIndex].hindiName,
         };
         return updated;
       } else {
         const newItem: ListItem = {
           id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
           name: trimmedName,
+          hindiName: hindiName || '',
           category: category || 'General Store Items',
           quantity: 1,
           unit: unit || '1 Pack / Unit',
           brandHint: brandHint || '',
+          mrp: mrp,
         };
         return [...prev, newItem];
       }
@@ -126,19 +192,26 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const totalItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
+  const estimatedTotalAmount = items.reduce((acc, item) => {
+    if (item.mrp && item.mrp > 0) {
+      return acc + (item.mrp * item.quantity);
+    }
+    return acc;
+  }, 0);
+
   const buildFormattedMessage = (): string => {
     const isDelivery = fulfillmentMode === 'delivery';
     
-    let msg = `🛒 *DILIP KIRANA STORE - GROCERY ORDER / PARCHI*\n`;
-    msg += `📍 *Store Location:* H.No. 41/212, Jhanda Chowk, Sanjay Nagar, Raipur\n`;
+    let msg = `🛒 *DILIP KIRANA STORE - GROCERY ORDER / किराना पर्ची*\n`;
+    msg += `📍 *Store:* H.No. 41/212, Jhanda Chowk, Sanjay Nagar, Raipur\n`;
     msg += `👤 *Owner:* Bhavishya Dewangan | 📞 8602777588\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
     
     if (isDelivery) {
-      msg += `🚚 *Fulfillment Preference:* HOME DELIVERY (Bulk / Monthly Order ₹2,999+)\n`;
+      msg += `🚚 *Fulfillment Preference:* HOME DELIVERY (Monthly/Bulk Order ₹2,999+)\n`;
       msg += `⏳ *Advance Notice:* 3+ Hours Ahead | Radius: Under 5km\n`;
     } else {
-      msg += `🏪 *Fulfillment Preference:* IN-STORE COUNTER PICKUP (Zero Wait Time)\n`;
+      msg += `🏪 *Fulfillment Preference:* IN-STORE COUNTER PICKUP (Zero Waiting Time)\n`;
     }
 
     if (customerName.trim()) {
@@ -148,25 +221,31 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
       msg += `🏡 *Customer Address/Area:* ${customerArea.trim()}\n`;
     }
     
-    msg += `\n📦 *Total Items List (${items.length} types / ${totalItemCount} units):*\n`;
+    msg += `\n📦 *Order Items (${items.length} types / ${totalItemCount} total units):*\n`;
 
     items.forEach((item, index) => {
       const brandStr = item.brandHint ? ` (${item.brandHint})` : '';
-      const unitStr = item.unit ? ` - [${item.unit}]` : '';
-      msg += `${index + 1}. *${item.name}*${brandStr} ${unitStr} ➔ *Qty: ${item.quantity}*\n`;
+      const unitStr = item.unit ? ` [${item.unit}]` : '';
+      const hindiStr = item.hindiName ? ` • ${item.hindiName}` : '';
+      const mrpStr = item.mrp ? ` (MRP: ₹${item.mrp} x ${item.quantity} = ₹${item.mrp * item.quantity})` : '';
+      msg += `${index + 1}. *${item.name}*${hindiStr}${brandStr}${unitStr} ➔ *Qty: ${item.quantity}*${mrpStr}\n`;
     });
 
+    if (estimatedTotalAmount > 0) {
+      msg += `\n💰 *Estimated Total MRP Bill:* ₹${estimatedTotalAmount.toLocaleString('en-IN')}/-\n`;
+    }
+
     if (customerNote.trim()) {
-      msg += `\n📝 *Special Instructions:* ${customerNote.trim()}\n`;
+      msg += `\n📝 *Special Note:* ${customerNote.trim()}\n`;
     }
 
     msg += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
     if (isDelivery) {
-      msg += `Please verify item availability, confirm total bill, and let me know the scheduled delivery time.\n`;
+      msg += `Please verify item stock, confirm final bill amount with any discounts, and share delivery timing.\n`;
     } else {
-      msg += `Please keep the bag packed and ready for quick pickup.\n`;
+      msg += `Please keep the grocery packet ready for pickup at the Sanjay Nagar counter.\n`;
     }
-    msg += `_Sent via Dilip Kirana Store Website (Owner: Bhavishya Dewangan)_`;
+    msg += `_Sent via Dilip Kirana Store Digital Parchi (Owner: Bhavishya Dewangan)_`;
 
     return msg;
   };
@@ -219,6 +298,7 @@ export const ShoppingListProvider: React.FC<{ children: React.ReactNode }> = ({ 
         sendListViaWhatsApp,
         copyListToClipboard,
         totalItemCount,
+        estimatedTotalAmount,
       }}
     >
       {children}

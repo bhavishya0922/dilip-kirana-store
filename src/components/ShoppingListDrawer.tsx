@@ -10,7 +10,8 @@ import {
   Check, 
   ArrowRight,
   Store,
-  Truck
+  Truck,
+  Receipt
 } from 'lucide-react';
 import { useShoppingList } from '../context/ShoppingListContext';
 
@@ -33,6 +34,7 @@ export const ShoppingListDrawer: React.FC = () => {
     sendListViaWhatsApp,
     copyListToClipboard,
     totalItemCount,
+    estimatedTotalAmount,
   } = useShoppingList();
 
   const [copied, setCopied] = useState(false);
@@ -56,21 +58,22 @@ export const ShoppingListDrawer: React.FC = () => {
       />
 
       {/* Drawer Panel */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
           
           {/* Header */}
-          <div className="p-5 bg-gradient-to-r from-emerald-800 to-emerald-900 text-white flex items-center justify-between">
+          <div className="p-4 sm:p-5 bg-gradient-to-r from-emerald-800 to-emerald-900 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                 <ShoppingBag className="w-5 h-5 text-amber-300" />
               </div>
               <div>
                 <h3 className="font-display font-extrabold text-lg leading-tight">
-                  My Kirana Parchi
+                  My Kirana Parchi • पर्ची
                 </h3>
                 <p className="text-xs text-emerald-200">
-                  {totalItemCount} {totalItemCount === 1 ? 'item' : 'items'} in grocery list
+                  {totalItemCount} {totalItemCount === 1 ? 'item' : 'items'}
+                  {estimatedTotalAmount > 0 && ` • Est. ₹${estimatedTotalAmount.toLocaleString('en-IN')}`}
                 </p>
               </div>
             </div>
@@ -116,7 +119,7 @@ export const ShoppingListDrawer: React.FC = () => {
           </div>
 
           {/* Customer Area and Name info */}
-          <div className="p-4 bg-stone-50 border-b border-stone-200 grid grid-cols-2 gap-2 text-xs">
+          <div className="p-3.5 bg-stone-50 border-b border-stone-200 grid grid-cols-2 gap-2 text-xs">
             <div>
               <label className="block text-[10px] font-bold text-stone-500 uppercase mb-1">
                 Your Name
@@ -137,7 +140,7 @@ export const ShoppingListDrawer: React.FC = () => {
                 type="text"
                 value={customerArea}
                 onChange={(e) => setCustomerArea(e.target.value)}
-                placeholder="Sanjay Nagar (under 5km)"
+                placeholder="Sanjay Nagar"
                 className="w-full px-2.5 py-1.5 bg-white border border-stone-300 rounded-md text-xs focus:border-emerald-600 focus:outline-none"
               />
             </div>
@@ -150,7 +153,7 @@ export const ShoppingListDrawer: React.FC = () => {
                 <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-stone-300" />
                 <p className="text-sm font-bold text-stone-700">No items added yet</p>
                 <p className="text-xs text-stone-400 mt-1 max-w-xs mx-auto">
-                  Browse categories and tap "+ Add" on any item to build your WhatsApp list.
+                  Browse categories and tap "+ Add" on any grocery item to build your WhatsApp parchi.
                 </p>
                 <button
                   onClick={() => {
@@ -166,22 +169,39 @@ export const ShoppingListDrawer: React.FC = () => {
               </div>
             ) : (
               items.map((item, idx) => (
-                <div key={item.id} className="py-3 flex items-center justify-between gap-3">
+                <div key={item.id} className="py-3 flex items-center justify-between gap-2.5">
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-bold text-stone-900 truncate">
                       {idx + 1}. {item.name}
                     </div>
-                    <div className="text-[11px] text-stone-500">
-                      {item.brandHint && <span className="text-emerald-700 font-semibold">{item.brandHint} • </span>}
-                      <span>{item.unit || '1 Pack'}</span>
+                    {item.hindiName && (
+                      <div className="text-[11px] font-semibold text-emerald-800 truncate">
+                        {item.hindiName}
+                      </div>
+                    )}
+                    <div className="text-[10px] text-stone-500 flex items-center gap-1.5 mt-0.5">
+                      {item.brandHint && <span className="font-semibold text-stone-700">{item.brandHint}</span>}
+                      {item.unit && <span>• {item.unit}</span>}
+                      {item.mrp && (
+                        <span className="bg-amber-100 text-amber-900 font-bold px-1 rounded">
+                          MRP ₹{item.mrp}
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
+                    {item.mrp && item.mrp > 0 && (
+                      <span className="text-xs font-black text-stone-900">
+                        ₹{item.mrp * item.quantity}
+                      </span>
+                    )}
+
                     <div className="flex items-center bg-stone-100 rounded-md border border-stone-200">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
                         className="w-5 h-5 flex items-center justify-center text-stone-600 hover:bg-white rounded transition-colors"
+                        title="Decrease quantity"
                       >
                         <Minus className="w-2.5 h-2.5" />
                       </button>
@@ -191,6 +211,7 @@ export const ShoppingListDrawer: React.FC = () => {
                       <button
                         onClick={() => updateQuantity(item.id, 1)}
                         className="w-5 h-5 flex items-center justify-center text-stone-600 hover:bg-white rounded transition-colors"
+                        title="Increase quantity"
                       >
                         <Plus className="w-2.5 h-2.5" />
                       </button>
@@ -199,6 +220,7 @@ export const ShoppingListDrawer: React.FC = () => {
                     <button
                       onClick={() => removeItem(item.id)}
                       className="p-1 text-stone-400 hover:text-red-600 rounded transition-colors"
+                      title="Remove item"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -208,16 +230,29 @@ export const ShoppingListDrawer: React.FC = () => {
             )}
           </div>
 
-          {/* Notes Input */}
+          {/* Special Notes Input */}
           {items.length > 0 && (
             <div className="p-3 bg-stone-50 border-t border-stone-200">
               <input
                 type="text"
                 value={customerNote}
                 onChange={(e) => setCustomerNote(e.target.value)}
-                placeholder="Note: e.g. Pack for pickup / preferred delivery time"
+                placeholder="Note: e.g. Pack for pickup by 6 PM..."
                 className="w-full px-3 py-1.5 bg-white border border-stone-300 rounded-md text-xs focus:outline-none focus:border-emerald-600"
               />
+            </div>
+          )}
+
+          {/* Estimated Total Calculation */}
+          {items.length > 0 && estimatedTotalAmount > 0 && (
+            <div className="p-3.5 bg-amber-50/90 border-t border-amber-200 flex items-center justify-between">
+              <div className="flex items-center gap-1 text-xs text-amber-950 font-bold">
+                <Receipt className="w-4 h-4 text-amber-700" />
+                <span>Estimated Total Bill:</span>
+              </div>
+              <div className="text-base font-black text-emerald-800">
+                ₹{estimatedTotalAmount.toLocaleString('en-IN')}/-
+              </div>
             </div>
           )}
 
